@@ -1,740 +1,599 @@
 "use client";
-
 import { useState } from "react";
-
-const PASSWORD = "keira26";
-
-// ─── DATA ────────────────────────────────────────────────────────────
-
-const funds = [
-  { name: "Main Sequence", focus: "Deep tech, CSIRO-backed", url: "mseq.vc", hero: "We back deep tech founders", pattern: "Identity + audience" },
-  { name: "Blackbird", focus: "Full-stack ANZ VC", url: "blackbird.vc", hero: "Enter the world of Blackbird", pattern: "Invitational / mythic" },
-  { name: "AirTree", focus: "ANZ tech, network-powered", url: "airtree.vc", hero: "Big things / Start small", pattern: "Aspirational tagline" },
-  { name: "Square Peg", focus: "APAC, concentrated bets", url: "squarepeg.vc", hero: "We help founders from our corner of the world shape the future", pattern: "Geographic + founder-centric" },
-  { name: "Tenacious", focus: "AgriFood-tech specialist", url: "tenacious.ventures", hero: "Unlocking impact at scale in agri-food systems", pattern: "Sector + mission" },
-  { name: "Skip Capital", focus: "Farquhar family office", url: "skipcapital.com", hero: "Skip Capital is a private fund investing in technology and infrastructure", pattern: "Factual one-liner" },
-  { name: "Lux Capital", focus: "US deep tech", url: "luxcapital.com", hero: "We turn sci-fi into sci-fact", pattern: "Bold brand statement" },
-  { name: "In-Q-Tel", focus: "US intel community", url: "iqt.org", hero: "Investing in global innovation to secure the nation", pattern: "Mission-driven" },
-  { name: "Breakthrough Vic", focus: "Victorian sovereign fund", url: "breakthroughvictoria.com", hero: "Investing in Innovation for Victoria's Economic Future", pattern: "Geographic + institutional" },
-];
-
-const portfolio = [
-  { name: "Actuals", sector: "AI / Fintech", desc: "AI billing - contracts into code for automated invoicing", tag: "AI", url: "https://actuals.com/" },
-  { name: "Apollo", sector: "AI / Cybersecurity", desc: "AI compliance for startups (SOC 2, ISO 27001)", tag: "AI", url: "https://apollosecure.com/" },
-  { name: "Aquila", sector: "Space / Energy", desc: "Wireless power delivery via laser for drones", tag: "SPACE", url: "https://www.aquila.earth/" },
-  { name: "Aussie Angels", sector: "Platform", desc: "Angel syndicate for early-stage AU startups", tag: "PLATFORM", url: "https://aussieangels.com/" },
-  { name: "Chirp", sector: "AI / Sales", desc: "AI sales platform unifying CRM, email, Slack, LinkedIn", tag: "AI", url: "https://www.trychirp.com/" },
-  { name: "Elita", sector: "Pet Health", desc: "Pet longevity - 100+ biomarkers + stem cell banking", tag: "EMERGING", url: "https://www.elita.pet/" },
-  { name: "Fluency", sector: "AI / Enterprise", desc: "OS-level agent mapping work for AI automation", tag: "AI", url: "https://usefluency.com/" },
-  { name: "Flux", sector: "Robotics / AgTech", desc: "Autonomous solar-electric robot for weed management", tag: "ROBOTICS", url: "https://www.fluxrobotics.ai/" },
-  { name: "HEO", sector: "Space / Defense", desc: "High-res imagery of satellites and objects in orbit", tag: "SPACE", url: "https://www.heospace.com/" },
-  { name: "Keeyu", sector: "AI / Ecommerce", desc: "AI post-purchase ops - proactive fulfillment fixes", tag: "AI", url: "https://www.keeyu.com/" },
-  { name: "Kindling", sector: "Creator Economy", desc: "AI tools + advertiser marketplace for mid-tier creators", tag: "EMERGING", url: "#" },
-  { name: "Magic Valley", sector: "Food Tech", desc: "Cultivated (cell-grown) meat", tag: "ROBOTICS", url: "https://magicvalley.com.au/" },
-  { name: "Metahuman Labs", sector: "Consumer Health", desc: "Pharmaceutical-grade creatine supplements", tag: "EMERGING", url: "https://metahumanlabs.com.au" },
-  { name: "MP Space", sector: "Space / Hardware", desc: "Next-gen spacecraft power subsystems", tag: "SPACE", url: "https://www.mpspace.io/" },
-  { name: "Puralink", sector: "Robotics / Infra", desc: "Autonomous pipe inspection robots", tag: "ROBOTICS", url: "https://www.puralink.com.au/" },
-  { name: "Shopfront", sector: "AI / Ecommerce", desc: "Multi-channel listing for secondhand sellers + AI tools", tag: "AI", url: "https://shopfront.app/" },
-];
-
-const sections = [
-  {
-    num: 1,
-    title: "Navigation",
-    notes: [
-      { label: "Current", text: "Logo + generic nav links." },
-      { label: "Change", text: "Add a primary CTA button (\"Pitch Us\" or \"Get in Touch\") to the nav bar. 7/9 funds have a founder-facing CTA in the top nav. This is the #1 conversion driver." },
-      { label: "Why", text: "Main Sequence has \"Pitch\" in nav. Blackbird has \"Get Investment.\" AirTree has \"Get in touch.\" Square Peg has \"Get in Touch.\" Without this, founders browse and leave." },
-      { label: "Remove", text: "Any nav items that don't serve founders directly. Keep to 5-6 items max." },
-    ],
-    mockup: `[Logo] ---- [About] [Portfolio] [Thesis] [Team] [Journal] ---- [PITCH US ->]
-
-CTA button: visually distinct (accent color, filled).
-Links to simple contact form or email.
-NOT a 20-field application.`,
-  },
-  {
-    num: 2,
-    title: "Hero",
-    notes: [
-      { label: "Current", text: "\"WELCOME\" tag + serif title + subtitle paragraph. Generic welcome language." },
-      { label: "Change", text: "Replace with a single, bold identity statement under 15 words. 9/9 funds do this. The hero must answer \"Who are you and what do you believe?\" in one line." },
-      { label: "Why", text: "The current hero does not differentiate Davis from any other angel investor. \"Welcome\" is passive. Every top fund leads with a belief statement, not a greeting." },
-      { label: "Tone", text: "Should feel like a conviction, not a description. Not \"We invest in startups\" but \"We back the founders solving Australia's hardest problems.\"" },
-    ],
-    mockup: `HERO OPTIONS (pick one):
-
-  "We back bold Australian founders building what's next"
-  "Private capital for Australia's most ambitious builders"
-  "Conviction capital for founders pushing boundaries"
-
-SUPPORTING PARAGRAPH (2 sentences max):
-  "Davis Enterprises backs early-stage Australian companies
-   across AI, space, robotics, and deep tech. We provide
-   private capital, strategic support, and the financial
-   expertise to help bold founders scale."
-
-[CTA Button: "See Our Portfolio" or "Meet Our Founders"]`,
-  },
-  {
-    num: 3,
-    title: "Thesis / What We Back",
-    notes: [
-      { label: "Current", text: "Investment criteria shown as icon list (Geography: Australian, Stage: Early-stage, etc.) buried in About section." },
-      { label: "Change", text: "Elevate into standalone section with specificity. 7/9 funds clearly articulate their thesis on homepage. \"Sector agnostic\" tells founders nothing about fit." },
-      { label: "Why", text: "Founders self-select based on thesis fit. A space tech founder seeing \"sector agnostic\" doesn't know if Davis understands their domain. Named categories with portfolio proof create instant relevance." },
-      { label: "Evidence", text: "Main Sequence uses \"Six Challenges.\" Lux uses sector cards. Both explicitly name what they invest in." },
-    ],
-    mockup: `SECTION HEADER: "What We Back"
-
-FOUR THESIS PILLARS (as cards):
-
-  [AI & Automation]
-  Companies applying AI to specific verticals -
-  billing, cybersecurity, sales, ecommerce, enterprise ops.
-  Portfolio: Actuals, Apollo, Chirp, Fluency, Keeyu, Shopfront
-
-  [Space & Defense]
-  Australian sovereign capability in orbit and beyond -
-  imaging, power systems, wireless energy.
-  Portfolio: HEO, MP Space, Aquila
-
-  [Robotics & Deep Tech]
-  Hardware companies solving physical-world problems
-  in agriculture, infrastructure, and food.
-  Portfolio: Flux, Puralink, Magic Valley
-
-  [Emerging & Platform]
-  Creator tools, pet health, consumer wellness,
-  and ecosystem infrastructure.
-  Portfolio: Kindling, Elita, Metahuman Labs, Aussie Angels
-
-CRITERIA ROW:
-  Stage: Pre-seed & Seed | Geography: Australia | Conviction-led`,
-  },
-  {
-    num: 4,
-    title: "Portfolio",
-    notes: [
-      { label: "Current", text: "3-column grid of 16 logos with company names. Clicking opens company's external website. No descriptions." },
-      { label: "Change", text: "Add a one-line descriptor under each company name. This is the single highest-impact change for founder conversion." },
-      { label: "Why", text: "Portfolio is the #1 trust signal (9/9 funds use it). But logos alone don't communicate relevance. A space tech founder scanning the grid won't know what \"Actuals\" or \"Keeyu\" does. One line changes everything." },
-      { label: "Enhancement", text: "Add category tags or filter by thesis pillar. Feature 2-3 companies with a short \"Why we invested\" blurb." },
-    ],
-    mockup: `SECTION HEADER: "Our Portfolio"
-
-GRID (3-column, each card):
-
-  [Logo]
-  Company Name
-  One-line descriptor
-  [CATEGORY TAG]
-
-EXAMPLE:
-  [Flux logo]
-  Flux
-  "Autonomous solar-electric robots for precision agriculture"
-  [ROBOTICS & DEEP TECH]
-
-Optional: filterable by category (AI / Space / Robotics / Platform)`,
-  },
-  {
-    num: 5,
-    title: "Founder Testimonials (NEW)",
-    notes: [
-      { label: "Current", text: "Testimonials from external contacts about Peter as a person. Good character references but don't demonstrate portfolio value creation." },
-      { label: "Change", text: "Replace or supplement with testimonials from portfolio company founders. Focus on WHAT Davis did beyond writing a check." },
-      { label: "Why", text: "AirTree has 7 founder testimonials. Square Peg has 10. When a founder reads another founder saying \"Peter helped us hire our first engineer\" - that closes the deal." },
-      { label: "Source from", text: "Portfolio founders (Flux, HEO, Chirp, Apollo, etc.) with specific examples: introductions, strategic advice, financial structuring, follow-on support." },
-    ],
-    mockup: `SECTION HEADER: "From Our Founders"
-
-3 TESTIMONIAL CARDS:
-
-  "[Quote about specific value-add]"
-  - Founder Name, CEO of Portfolio Company
-
-FOCUS QUOTES ON THEMES:
-  - Speed of decision-making
-  - Strategic introductions / network
-  - Financial / structuring expertise
-  - Long-term commitment / follow-on`,
-  },
-  {
-    num: 6,
-    title: "How We Work (Philosophy)",
-    notes: [
-      { label: "Current", text: "Philosophy section with numbered values and a quote. Good content but buried and generic." },
-      { label: "Change", text: "Tighten to 3 core principles. Make each specific to how Davis actually operates." },
-      { label: "Why", text: "Square Peg's \"We invest in companies, not rounds\" and Blackbird's \"From the very beginning and at every stage\" are memorable because they are SPECIFIC." },
-      { label: "CRO Insight", text: "Values sections only convert when they answer the founder's real question: \"How will you behave when things get hard?\" Specific commitments beat generic values." },
-    ],
-    mockup: `SECTION HEADER: "How We Work"
-
-THREE PRINCIPLES (bold headline + 1-2 sentences):
-
-  1. Fast Decisions, Not Committees
-  "We make investment decisions in weeks, not months.
-   Founders shouldn't have to wait."
-
-  2. Capital + Financial Expertise
-  "We bring deep financial structuring knowledge
-   to every deal - not just a check."
-
-  3. Founders for the Long Term
-  "We back you at the start and show up
-   at every stage after."
-
-(Write based on Peter's actual operating principles.
- Be specific, be different, be memorable.)`,
-  },
-  {
-    num: 7,
-    title: "Team / About Peter (NEW)",
-    notes: [
-      { label: "Current", text: "No dedicated team section on homepage. Peter referenced in testimonials, footer links to peterdavisau.com. Founders must leave to learn about him." },
-      { label: "Change", text: "Add brief, human section about Peter directly on homepage. 6/9 funds show team on homepage." },
-      { label: "Why", text: "This is a personal fund. The investor IS the product. Founders are choosing to work with Peter personally. Skip Capital makes team the ENTIRE homepage." },
-      { label: "Tone", text: "Skip Capital's bios mention jiu jitsu and flat whites. Include ONE personal detail that makes Peter human." },
-    ],
-    mockup: `SECTION HEADER: "Who We Are"
-
-  [Professional photo of Peter]
-
-  Peter Davis
-  Founder, Davis Enterprises Holdings
-
-  "Peter has been investing in early-stage Australian
-   companies for [X] years, with a background in
-   [finance/accounting/specific]. He backs founders
-   building real things that solve real problems -
-   and he's not afraid to bet on the unconventional."
-
-  [LinkedIn] [Personal site]`,
-  },
-  {
-    num: 8,
-    title: "Content / Journal (NEW)",
-    notes: [
-      { label: "Current", text: "No blog, newsletter, or thought leadership content on the site." },
-      { label: "Change", text: "Add a lightweight content section - even starting with 2-3 posts. 6/9 funds have thought leadership on homepage." },
-      { label: "Why", text: "Content serves 3 purposes: (1) domain expertise signal, (2) SEO/discoverability, (3) shareable reputation building. This is how funds build deal flow passively." },
-      { label: "MVP", text: "Even a simple \"Notes\" section with 1-2 posts signals intellectual engagement. Can link to LinkedIn articles or Substack." },
-    ],
-    mockup: `SECTION HEADER: "Thinking" or "Journal"
-
-2-3 ARTICLE CARDS:
-  [Why We Invested in [Company X]] - Investment thesis
-  [What I Look for in a Founder] - Peter's framework
-  [The Australian Space Opportunity] - Sector insight
-
-Does NOT need to be a full blog platform.
-Links to LinkedIn articles or Substack work fine.
-
-NEWSLETTER CTA:
-  "Stay in the loop" + email field`,
-  },
-  {
-    num: 9,
-    title: "Call to Action (Bottom)",
-    notes: [
-      { label: "Current", text: "CTA section with \"Get in Touch\" linking to LinkedIn company page only." },
-      { label: "Change", text: "Add email option alongside LinkedIn. LinkedIn-only adds friction - founder must log in, find message button, compose." },
-      { label: "Why", text: "Square Peg: \"Let's start talking.\" AirTree: \"Get in touch.\" Best CTAs are warm invitations." },
-      { label: "CRO Data", text: "Every additional click between \"I want to reach out\" and \"message sent\" loses ~20% of potential contacts. LinkedIn-only = 3+ extra clicks vs. direct email." },
-    ],
-    mockup: `SECTION HEADER: "Let's Talk"
-
-  "Building something bold?
-   We'd love to hear about it."
-
-  [Email Us: peter@davisenterprises.com.au]
-  [Connect on LinkedIn ->]
-
-Optional: simple form (Name, Email, Company, One-line pitch).
-Email should ALWAYS be available as lowest-friction option.`,
-  },
-  {
-    num: 10,
-    title: "Footer",
-    notes: [
-      { label: "Current", text: "Logo, tagline, column links, copyright, location. Functional but standard." },
-      { label: "Change", text: "Add belief statement as footer anchor. Lux puts \"We believe before others understand\" in footer. Bookends the page with brand identity." },
-      { label: "Add", text: "Direct email address visible in footer (trust signal - shows accessibility)." },
-    ],
-    mockup: `[Davis Enterprises Logo]
-"Conviction capital for Australia's boldest founders"
-
-[About] [Portfolio] [Thesis] [Team] [Journal] [Contact]
-
-peter@davisenterprises.com.au
-Melbourne, Australia
-[LinkedIn]
-(c) 2026 Davis Enterprises Holdings`,
-  },
-];
-
-const priorityActions = [
-  { rank: 1, action: "Rewrite the hero", detail: "Single bold statement, no \"Welcome\"", impact: "Highest impact, lowest effort" },
-  { rank: 2, action: "Add one-line descriptors to portfolio", detail: "Tell founders what each company does", impact: "Highest conversion impact" },
-  { rank: 3, action: "Add \"Pitch Us\" CTA to navigation", detail: "Direct conversion path for founders", impact: "Direct revenue driver" },
-  { rank: 4, action: "Create thesis pillars section", detail: "Name the sectors: AI, Space, Robotics, Emerging", impact: "Helps founders self-select" },
-  { rank: 5, action: "Add Peter's bio to homepage", detail: "Photo, credentials, personality", impact: "Trust for a personal fund" },
-  { rank: 6, action: "Source 3 founder testimonials", detail: "From portfolio founders about specific value-add", impact: "Social proof that converts" },
-  { rank: 7, action: "Add direct email contact", detail: "Reduce friction vs LinkedIn-only", impact: "Captures 20%+ more leads" },
-  { rank: 8, action: "Reduce visual effects/animation", detail: "Remove scan lines, orbs, glitch effects", impact: "Faster load, better readability" },
-  { rank: 9, action: "Start a lightweight journal", detail: "Investment notes, founder frameworks, sector insights", impact: "SEO + passive deal flow" },
-  { rank: 10, action: "Add newsletter signup", detail: "\"Stay in the loop\" with email capture", impact: "Community building" },
-];
-
-const langPatterns = [
-  { trait: "Founder-centric language", freq: "7/9", color: "#2d7fff" },
-  { trait: "Anti-jargon (no buzzwords)", freq: "9/9", color: "#00d4ff" },
-  { trait: "Aspirational but grounded", freq: "7/9", color: "#2d7fff" },
-  { trait: "Short, declarative sentences", freq: "8/9", color: "#2d7fff" },
-  { trait: "Mission-first over returns-first", freq: "9/9", color: "#00d4ff" },
-  { trait: "Warmth / approachability", freq: "6/9", color: "#4da8ff" },
-  { trait: "Manifesto / belief-driven copy", freq: "5/9", color: "#4da8ff" },
-];
-
-const trustSignals = [
-  { signal: "Portfolio company logos / names", freq: "9/9" },
-  { signal: "Named team members on homepage", freq: "6/9" },
-  { signal: "Thought leadership content", freq: "6/9" },
-  { signal: "Institutional backing", freq: "5/9" },
-  { signal: "Key stats (understated)", freq: "4/9" },
-  { signal: "Founder testimonials", freq: "3/9" },
-  { signal: "Co-investor / partner logos", freq: "3/9" },
-  { signal: "Community programs", freq: "3/9" },
-];
-
-// ─── STYLES ──────────────────────────────────────────────────────────
-
-const css = `
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0a0f1a; color: #e0e8f5; }
-  a { color: #4da8ff; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-
-  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-  .login-box { background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 48px; max-width: 400px; width: 100%; text-align: center; }
-  .login-box h1 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
-  .login-box p { color: #7a8faa; font-size: 14px; margin-bottom: 24px; }
-  .login-box input { width: 100%; padding: 12px 16px; background: #0a0f1a; border: 1px solid #1e293b; border-radius: 8px; color: #e0e8f5; font-size: 15px; margin-bottom: 12px; outline: none; }
-  .login-box input:focus { border-color: #2d7fff; }
-  .login-box button { width: 100%; padding: 12px; background: #2d7fff; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; }
-  .login-box button:hover { background: #1a6ae8; }
-  .login-error { color: #f87171; font-size: 13px; margin-bottom: 12px; }
-
-  .page { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
-  .page-header { text-align: center; margin-bottom: 64px; padding-top: 40px; }
-  .page-header h1 { font-size: 36px; font-weight: 700; margin-bottom: 8px; }
-  .page-header .sub { color: #7a8faa; font-size: 15px; line-height: 1.6; max-width: 700px; margin: 0 auto; }
-
-  .nav-tabs { display: flex; gap: 4px; margin-bottom: 48px; border-bottom: 1px solid #1e293b; overflow-x: auto; }
-  .nav-tab { padding: 12px 20px; font-size: 14px; font-weight: 500; color: #7a8faa; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; }
-  .nav-tab:hover { color: #e0e8f5; }
-  .nav-tab.active { color: #2d7fff; border-bottom-color: #2d7fff; }
-
-  .section-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-  .section-sub { color: #7a8faa; font-size: 14px; margin-bottom: 32px; }
-
-  /* Two-column redesign sections */
-  .redesign-section { margin-bottom: 48px; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; }
-  .redesign-header { background: #111827; padding: 16px 24px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: 12px; }
-  .redesign-num { background: #2d7fff; color: white; font-size: 13px; font-weight: 700; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-family: 'JetBrains Mono', monospace; }
-  .redesign-name { font-size: 18px; font-weight: 600; }
-  .redesign-body { display: grid; grid-template-columns: 1fr 1fr; min-height: 200px; }
-  @media (max-width: 768px) { .redesign-body { grid-template-columns: 1fr; } }
-  .redesign-notes { padding: 24px; border-right: 1px solid #1e293b; }
-  @media (max-width: 768px) { .redesign-notes { border-right: none; border-bottom: 1px solid #1e293b; } }
-  .redesign-mockup { padding: 24px; background: #0d1321; }
-  .note-item { margin-bottom: 16px; }
-  .note-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: #2d7fff; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-  .note-text { font-size: 14px; line-height: 1.65; color: #b0bdd0; }
-  .mockup-pre { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.7; color: #7dd3fc; white-space: pre-wrap; word-break: break-word; }
-
-  /* Comp analysis tables */
-  .comp-table { width: 100%; border-collapse: collapse; margin-bottom: 32px; font-size: 14px; }
-  .comp-table th { text-align: left; padding: 10px 14px; background: #111827; color: #7a8faa; font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #1e293b; }
-  .comp-table td { padding: 10px 14px; border-bottom: 1px solid #0f172a; color: #b0bdd0; vertical-align: top; }
-  .comp-table tr:hover td { background: #111827; }
-
-  /* Portfolio grid */
-  .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 32px; }
-  .portfolio-card { background: #111827; border: 1px solid #1e293b; border-radius: 10px; padding: 20px; }
-  .portfolio-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-  .portfolio-card .sector { font-size: 12px; color: #7a8faa; margin-bottom: 8px; }
-  .portfolio-card .desc { font-size: 13px; color: #b0bdd0; line-height: 1.5; margin-bottom: 10px; }
-  .portfolio-tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.05em; }
-  .tag-ai { background: rgba(45,127,255,0.15); color: #4da8ff; }
-  .tag-space { background: rgba(200,80,255,0.15); color: #d08cff; }
-  .tag-robotics { background: rgba(0,212,255,0.15); color: #00d4ff; }
-  .tag-emerging { background: rgba(255,180,50,0.15); color: #ffb432; }
-  .tag-platform { background: rgba(100,220,100,0.15); color: #6ddc6d; }
-
-  /* Priority list */
-  .priority-list { display: flex; flex-direction: column; gap: 12px; }
-  .priority-item { display: grid; grid-template-columns: 40px 1fr 200px; gap: 16px; align-items: center; background: #111827; border: 1px solid #1e293b; border-radius: 10px; padding: 16px 20px; }
-  @media (max-width: 768px) { .priority-item { grid-template-columns: 40px 1fr; } .priority-impact { display: none; } }
-  .priority-rank { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: #2d7fff; text-align: center; }
-  .priority-action { font-size: 15px; font-weight: 600; }
-  .priority-detail { font-size: 13px; color: #7a8faa; margin-top: 2px; }
-  .priority-impact { font-size: 12px; color: #4da8ff; font-family: 'JetBrains Mono', monospace; text-align: right; }
-
-  /* Freq bars */
-  .freq-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-  .freq-label { width: 260px; font-size: 13px; color: #b0bdd0; flex-shrink: 0; }
-  .freq-bar-bg { flex: 1; height: 24px; background: #111827; border-radius: 4px; overflow: hidden; position: relative; }
-  .freq-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 11px; font-weight: 600; color: white; font-family: 'JetBrains Mono', monospace; }
-  .freq-val { width: 40px; font-size: 13px; font-weight: 600; text-align: right; font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
-
-  /* Wireframe */
-  .wireframe { background: #0d1321; border: 1px solid #1e293b; border-radius: 12px; padding: 32px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; color: #7dd3fc; white-space: pre-wrap; overflow-x: auto; margin-bottom: 32px; }
-
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 40px; }
-  .stat-card { background: #111827; border: 1px solid #1e293b; border-radius: 10px; padding: 20px; text-align: center; }
-  .stat-num { font-size: 28px; font-weight: 700; color: #2d7fff; font-family: 'JetBrains Mono', monospace; }
-  .stat-label { font-size: 12px; color: #7a8faa; margin-top: 4px; }
-
-  .callout { background: rgba(45,127,255,0.08); border-left: 3px solid #2d7fff; padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 32px; font-size: 14px; line-height: 1.6; color: #b0bdd0; }
-  .callout strong { color: #e0e8f5; }
-
-  .gh-link { display: inline-flex; align-items: center; gap: 8px; background: #111827; border: 1px solid #1e293b; padding: 10px 20px; border-radius: 8px; font-size: 14px; color: #e0e8f5; margin-top: 24px; }
-  .gh-link:hover { background: #1e293b; text-decoration: none; }
-`;
-
-// ─── COMPONENTS ──────────────────────────────────────────────────────
-
-function LoginGate({ onAuth }: { onAuth: () => void }) {
-  const [pw, setPw] = useState("");
-  const [error, setError] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (pw === PASSWORD) {
-      onAuth();
-    } else {
-      setError(true);
-    }
-  };
-
-  return (
-    <div className="login-wrap">
-      <form className="login-box" onSubmit={handleSubmit}>
-        <h1>Davis Enterprises</h1>
-        <p>Website Redesign Brief</p>
-        {error && <div className="login-error">Incorrect password</div>}
-        <input
-          type="password"
-          placeholder="Enter password"
-          value={pw}
-          onChange={(e) => { setPw(e.target.value); setError(false); }}
-          autoFocus
-        />
-        <button type="submit">View Brief</button>
-      </form>
-    </div>
-  );
-}
-
-function TagBadge({ tag }: { tag: string }) {
-  const cls = tag === "AI" ? "tag-ai" : tag === "SPACE" ? "tag-space" : tag === "ROBOTICS" ? "tag-robotics" : tag === "PLATFORM" ? "tag-platform" : "tag-emerging";
-  const labels: Record<string, string> = { AI: "AI & AUTOMATION", SPACE: "SPACE & DEFENSE", ROBOTICS: "ROBOTICS & DEEP TECH", PLATFORM: "PLATFORM", EMERGING: "EMERGING" };
-  return <span className={`portfolio-tag ${cls}`}>{labels[tag] || tag}</span>;
-}
-
-// ─── MAIN ────────────────────────────────────────────────────────────
 
 export default function Page() {
   const [authed, setAuthed] = useState(false);
-  const [tab, setTab] = useState<"brief" | "analysis" | "portfolio">("brief");
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState(false);
 
   if (!authed) {
     return (
       <>
-        <style dangerouslySetInnerHTML={{ __html: css }} />
-        <LoginGate onAuth={() => setAuthed(true)} />
+        <style dangerouslySetInnerHTML={{ __html: styles }} />
+        <div className="gate">
+          <form onSubmit={e => { e.preventDefault(); pw === "keira26" ? setAuthed(true) : setErr(true); }}>
+            <h1>Davis Enterprises Holdings</h1>
+            <p>Website Redesign Brief</p>
+            {err && <div className="err">Incorrect password</div>}
+            <input type="password" placeholder="Enter password" value={pw} onChange={e => { setPw(e.target.value); setErr(false); }} autoFocus />
+            <button type="submit">View Brief</button>
+          </form>
+        </div>
       </>
     );
   }
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: css }} />
-      <div className="page">
-        <div className="page-header">
-          <h1>Davis Enterprises Holdings</h1>
-          <p className="sub">
-            Website redesign brief informed by competitive analysis of 9 comparable early-stage and deep tech fund websites.
-            Prepared February 2026.
+      <style dangerouslySetInnerHTML={{ __html: styles }} />
+      <div className="wrap">
+
+        {/* ── COVER ──────────────────────────────────────── */}
+        <header className="cover">
+          <div className="badge">CONFIDENTIAL BRIEF</div>
+          <h1>Website Redesign Proposal</h1>
+          <h2>davisenterprises.com.au</h2>
+          <p className="covermeta">
+            We analyzed 9 comparable fund websites to identify the patterns that attract
+            the best founder deal flow. This brief explains what to change, why, and in what order.
           </p>
-          <a className="gh-link" href="https://github.com/jgdeutsch/davis-enterprises-redesign" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
+          <p className="coverdate">February 2026</p>
+        </header>
 
-        <div className="nav-tabs">
-          <button className={`nav-tab ${tab === "brief" ? "active" : ""}`} onClick={() => setTab("brief")}>Redesign Brief</button>
-          <button className={`nav-tab ${tab === "analysis" ? "active" : ""}`} onClick={() => setTab("analysis")}>Competitive Analysis</button>
-          <button className={`nav-tab ${tab === "portfolio" ? "active" : ""}`} onClick={() => setTab("portfolio")}>Portfolio</button>
-        </div>
-
-        {tab === "brief" && <BriefTab />}
-        {tab === "analysis" && <AnalysisTab />}
-        {tab === "portfolio" && <PortfolioTab />}
-      </div>
-    </>
-  );
-}
-
-function BriefTab() {
-  return (
-    <>
-      <div className="callout">
-        <strong>How to read this brief:</strong> Each section below has two columns. The <strong>left column</strong> explains what was changed and why (backed by competitive evidence). The <strong>right column</strong> shows the proposed structure and copy direction. At the bottom you'll find the full page wireframe and priority actions.
-      </div>
-
-      {sections.map((s) => (
-        <div className="redesign-section" key={s.num}>
-          <div className="redesign-header">
-            <div className="redesign-num">{s.num}</div>
-            <div className="redesign-name">{s.title}</div>
+        {/* ── EXECUTIVE SUMMARY ─────────────────────────── */}
+        <section>
+          <h2 className="sh">Executive Summary</h2>
+          <div className="summary-grid">
+            <div className="summary-card good">
+              <div className="summary-label">What's working</div>
+              <ul>
+                <li>Strong dark visual identity (aligned with deep tech positioning)</li>
+                <li>Clean portfolio grid with 16 companies</li>
+                <li>Sophisticated typography (Cormorant Garamond + Outfit)</li>
+                <li>Testimonials from people who know Peter</li>
+              </ul>
+            </div>
+            <div className="summary-card gap">
+              <div className="summary-label">Critical gaps</div>
+              <ul>
+                <li>No belief statement in the hero - just "Welcome"</li>
+                <li>Portfolio shows logos but doesn't explain what companies do</li>
+                <li>No "Pitch Us" CTA anywhere - founders can't easily reach out</li>
+                <li>"Sector agnostic" hides a clear thesis that already exists</li>
+                <li>Peter's bio isn't on the homepage</li>
+                <li>Contact is LinkedIn-only (high friction)</li>
+              </ul>
+            </div>
           </div>
-          <div className="redesign-body">
-            <div className="redesign-notes">
-              {s.notes.map((n, i) => (
-                <div className="note-item" key={i}>
-                  <div className="note-label">{n.label}</div>
-                  <div className="note-text">{n.text}</div>
+          <div className="verdict">
+            <strong>The bottom line:</strong> The current site looks good but doesn't do the job a fund website
+            needs to do - convince a founder in 30 seconds that Davis is the right investor for them,
+            and give them a frictionless way to get in touch.
+          </div>
+        </section>
+
+        {/* ── COMPETITIVE CONTEXT ───────────────────────── */}
+        <section>
+          <h2 className="sh">What the Best Fund Websites Do</h2>
+          <p className="sp">We analyzed these 9 funds that compete for similar deal flow:</p>
+          <div className="fund-strip">
+            {["Main Sequence","Blackbird","AirTree","Square Peg","Tenacious Ventures","Skip Capital","Lux Capital","In-Q-Tel","Breakthrough Victoria"].map(f => (
+              <span key={f} className="fund-chip">{f}</span>
+            ))}
+          </div>
+
+          <h3 className="ssh">Universal patterns (things every fund does)</h3>
+          <div className="pattern-list">
+            {[
+              { pattern: "Bold hero statement under 15 words", count: "9/9", note: "Davis has \"Welcome\" + generic copy" },
+              { pattern: "Portfolio showcase with company context", count: "9/9", note: "Davis shows logos only, no descriptions" },
+              { pattern: "Anti-jargon, human language", count: "9/9", note: "Davis is fine here" },
+              { pattern: "Mission-first (never lead with fund size)", count: "9/9", note: "Davis is fine here" },
+            ].map(p => (
+              <div key={p.pattern} className="pattern-row">
+                <div className="pattern-count">{p.count}</div>
+                <div>
+                  <div className="pattern-name">{p.pattern}</div>
+                  <div className="pattern-note">{p.note}</div>
                 </div>
-              ))}
+              </div>
+            ))}
+          </div>
+
+          <h3 className="ssh">Common patterns (most funds do this)</h3>
+          <div className="pattern-list">
+            {[
+              { pattern: "Founder-facing CTA in navigation (\"Pitch Us\")", count: "7/9", note: "Davis has no CTA" },
+              { pattern: "Clear thesis / sector focus on homepage", count: "7/9", note: "Davis says \"sector agnostic\"" },
+              { pattern: "Named team members visible", count: "6/9", note: "Peter's bio is off-site" },
+              { pattern: "Thought leadership content", count: "6/9", note: "Davis has no blog or journal" },
+              { pattern: "Newsletter signup", count: "5/9", note: "Davis has none" },
+            ].map(p => (
+              <div key={p.pattern} className="pattern-row">
+                <div className="pattern-count">{p.count}</div>
+                <div>
+                  <div className="pattern-name">{p.pattern}</div>
+                  <div className="pattern-note">{p.note}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="insight-box">
+            <div className="insight-label">Key Insight</div>
+            Every fund we analyzed uses the word <strong>"back"</strong> instead of "invest in" and centers
+            <strong> "founders"</strong> instead of "companies." The language signals partnership, not transaction.
+            The best hero messages read like beliefs, not descriptions.
+          </div>
+
+          <div className="hero-compare">
+            <div className="hero-example">
+              <div className="hero-fund">Main Sequence</div>
+              <div className="hero-quote">"We back deep tech founders"</div>
             </div>
-            <div className="redesign-mockup">
-              <div className="mockup-pre">{s.mockup}</div>
+            <div className="hero-example">
+              <div className="hero-fund">Lux Capital</div>
+              <div className="hero-quote">"We turn sci-fi into sci-fact"</div>
+            </div>
+            <div className="hero-example">
+              <div className="hero-fund">Blackbird</div>
+              <div className="hero-quote">"Enter the world of Blackbird"</div>
+            </div>
+            <div className="hero-example current">
+              <div className="hero-fund">Davis (current)</div>
+              <div className="hero-quote">"Welcome"</div>
             </div>
           </div>
-        </div>
-      ))}
+        </section>
 
-      <h2 className="section-title" style={{ marginTop: 64 }}>Full Page Wireframe</h2>
-      <p className="section-sub">Complete section flow from top to bottom</p>
-      <div className="wireframe">{`1. NAV         [Logo] -- [About] [Portfolio] [Thesis] [Team] [Journal] -- [PITCH US]
-               _______________________________________________________________
-
-2. HERO        "We back bold Australian founders building what's next"
-               [1-2 sentence supporting paragraph]
-               [CTA: See Our Portfolio]
-               _______________________________________________________________
-
-3. THESIS      "What We Back"
-               [AI & Automation] [Space & Defense] [Robotics & Deep Tech] [Emerging]
-               Stage: Pre-seed & Seed | Geography: Australia | Approach: Conviction-led
-               _______________________________________________________________
-
-4. PORTFOLIO   "Our Portfolio"
-               [Actuals]      [Apollo]       [Aquila]
-               AI Billing     AI Security    Laser Power
-
-               [Chirp]        [Elita]        [Fluency]
-               AI Sales       Pet Health     Work Intel
-
-               [Flux]         [HEO]          [Keeyu]
-               Ag Robots      Space Imaging  Ecom Ops
-
-               [Kindling]     [Magic Valley] [Metahuman]
-               Creator Tools  Cultured Meat  Supplements
-
-               [MP Space]     [Puralink]     [Shopfront]
-               Space Power    Pipe Robots    Resale Tools
-               _______________________________________________________________
-
-5. TESTIMONIALS "From Our Founders"
-               [Quote 1]      [Quote 2]      [Quote 3]
-               - Founder A    - Founder B    - Founder C
-               _______________________________________________________________
-
-6. HOW WE WORK "How We Work"
-               [Fast Decisions] [Capital + Expertise] [Long-term Commitment]
-               _______________________________________________________________
-
-7. TEAM        "Who We Are"
-               [Photo] Peter Davis - Founder
-               [Bio paragraph]
-               [LinkedIn + personal site]
-               _______________________________________________________________
-
-8. JOURNAL     "Thinking"
-               [Post 1]       [Post 2]       [Post 3]
-               [Newsletter signup]
-               _______________________________________________________________
-
-9. CTA         "Let's Talk"
-               "Building something bold? We'd love to hear about it."
-               [Email Us]     [LinkedIn]
-               _______________________________________________________________
-
-10. FOOTER     [Logo] "Conviction capital for Australia's boldest founders"
-               [Nav links] | peter@... | Melbourne | LinkedIn | (c) 2026`}</div>
-
-      <h2 className="section-title" style={{ marginTop: 64 }}>Priority Actions</h2>
-      <p className="section-sub">Ranked by impact on founder conversion</p>
-      <div className="priority-list">
-        {priorityActions.map((p) => (
-          <div className="priority-item" key={p.rank}>
-            <div className="priority-rank">{p.rank}</div>
-            <div>
-              <div className="priority-action">{p.action}</div>
-              <div className="priority-detail">{p.detail}</div>
-            </div>
-            <div className="priority-impact">{p.impact}</div>
+        {/* ── THE HIDDEN THESIS ─────────────────────────── */}
+        <section>
+          <h2 className="sh">Your Thesis Already Exists - Name It</h2>
+          <p className="sp">
+            The site says "sector agnostic" but the portfolio tells a very specific story. These are the
+            four themes we identified across your 16 companies. Naming them explicitly helps founders
+            self-select and signals that you understand their domain.
+          </p>
+          <div className="thesis-grid">
+            {[
+              { title: "AI & Automation", pct: "63%", color: "#2d7fff", companies: ["Actuals","Apollo","Chirp","Fluency","Keeyu","Shopfront","Kindling","Elita"], desc: "AI applied to specific verticals - billing, cybersecurity, sales, ecommerce, enterprise ops, creator tools" },
+              { title: "Space & Defense", pct: "19%", color: "#c850ff", companies: ["HEO","MP Space","Aquila"], desc: "Australian sovereign capability - orbital imaging, spacecraft power, wireless energy" },
+              { title: "Robotics & Deep Tech", pct: "25%", color: "#00d4ff", companies: ["Flux","Puralink","Magic Valley"], desc: "Hardware solving physical-world problems in agriculture, infrastructure, and food" },
+              { title: "Emerging & Platform", pct: "19%", color: "#ffb432", companies: ["Kindling","Elita","Metahuman Labs","Aussie Angels"], desc: "Creator tools, pet health, consumer wellness, and ecosystem infrastructure" },
+            ].map(t => (
+              <div key={t.title} className="thesis-card">
+                <div className="thesis-head">
+                  <span className="thesis-title">{t.title}</span>
+                  <span className="thesis-pct" style={{ color: t.color }}>{t.pct}</span>
+                </div>
+                <div className="thesis-desc">{t.desc}</div>
+                <div className="thesis-companies">{t.companies.join(" / ")}</div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </>
-  );
-}
+        </section>
 
-function AnalysisTab() {
-  return (
-    <>
-      <div className="stat-grid">
-        <div className="stat-card"><div className="stat-num">9</div><div className="stat-label">Funds Analyzed</div></div>
-        <div className="stat-card"><div className="stat-num">9/9</div><div className="stat-label">Lead with bold hero</div></div>
-        <div className="stat-card"><div className="stat-num">7/9</div><div className="stat-label">Founder-centric language</div></div>
-        <div className="stat-card"><div className="stat-num">0/9</div><div className="stat-label">Lead with fund size</div></div>
-      </div>
+        {/* ── 10 RECOMMENDATIONS ────────────────────────── */}
+        <section>
+          <h2 className="sh">10 Recommendations, Ranked by Impact</h2>
+          <p className="sp">What to change, why, and what to aim for. Ordered so you can start from #1 and work down.</p>
 
-      <h2 className="section-title">Funds Analyzed</h2>
-      <p className="section-sub">Comparable early-stage and deep tech investors</p>
-      <table className="comp-table">
-        <thead>
-          <tr><th>Fund</th><th>Focus</th><th>Hero Message</th><th>Pattern</th></tr>
-        </thead>
-        <tbody>
-          {funds.map((f) => (
-            <tr key={f.name}>
-              <td style={{ fontWeight: 600, color: "#e0e8f5" }}>{f.name}</td>
-              <td>{f.focus}</td>
-              <td style={{ fontStyle: "italic" }}>"{f.hero}"</td>
-              <td><span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: "#4da8ff" }}>{f.pattern}</span></td>
-            </tr>
+          {recommendations.map((r, i) => (
+            <div key={i} className="rec">
+              <div className="rec-head">
+                <span className="rec-num">{i + 1}</span>
+                <span className="rec-title">{r.title}</span>
+                <span className={`rec-effort ${r.effort}`}>{r.effortLabel}</span>
+              </div>
+              <div className="rec-body">
+                <div className="rec-col">
+                  <div className="rec-label">Now</div>
+                  <div className="rec-text">{r.now}</div>
+                  <div className="rec-label" style={{ marginTop: 16 }}>Why Change</div>
+                  <div className="rec-text">{r.why}</div>
+                  {r.evidence && (
+                    <>
+                      <div className="rec-label" style={{ marginTop: 16 }}>Evidence</div>
+                      <div className="rec-text">{r.evidence}</div>
+                    </>
+                  )}
+                </div>
+                <div className="rec-col rec-target">
+                  <div className="rec-label">Target</div>
+                  <div className="rec-mock">{r.target}</div>
+                </div>
+              </div>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </section>
 
-      <h2 className="section-title" style={{ marginTop: 48 }}>Language Patterns</h2>
-      <p className="section-sub">How frequently each trait appears across 9 fund websites</p>
-      {langPatterns.map((p) => {
-        const [n, d] = p.freq.split("/").map(Number);
-        const pct = (n / d) * 100;
-        return (
-          <div className="freq-row" key={p.trait}>
-            <div className="freq-label">{p.trait}</div>
-            <div className="freq-bar-bg">
-              <div className="freq-bar" style={{ width: `${pct}%`, background: p.color }}>{p.freq}</div>
+        {/* ── PROPOSED PAGE FLOW ────────────────────────── */}
+        <section>
+          <h2 className="sh">Proposed Page Structure</h2>
+          <p className="sp">How the homepage should flow from top to bottom after implementing all recommendations.</p>
+          <div className="flow">
+            {[
+              { num: "01", name: "Navigation", desc: "Logo + 5 links + [PITCH US] button" },
+              { num: "02", name: "Hero", desc: "Bold belief statement + 2-sentence supporting copy + CTA" },
+              { num: "03", name: "What We Back", desc: "4 thesis pillars with portfolio proof under each" },
+              { num: "04", name: "Portfolio", desc: "16 companies in grid, each with one-line descriptor + category tag" },
+              { num: "05", name: "From Our Founders", desc: "3 testimonials from portfolio founders about specific value-add" },
+              { num: "06", name: "How We Work", desc: "3 specific operating principles (not generic values)" },
+              { num: "07", name: "Who We Are", desc: "Peter's photo, bio, credentials + one personal detail" },
+              { num: "08", name: "Thinking", desc: "2-3 articles (investment notes, frameworks, sector views)" },
+              { num: "09", name: "Let's Talk", desc: "Email + LinkedIn side by side, warm invitation copy" },
+              { num: "10", name: "Footer", desc: "Belief tagline + direct email + location" },
+            ].map(s => (
+              <div key={s.num} className="flow-row">
+                <div className="flow-num">{s.num}</div>
+                <div className="flow-name">{s.name}</div>
+                <div className="flow-desc">{s.desc}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── DESIGN NOTES ──────────────────────────────── */}
+        <section>
+          <h2 className="sh">Design Notes</h2>
+          <div className="design-grid">
+            <div className="design-card keep">
+              <div className="design-label">Keep</div>
+              <ul>
+                <li>Dark theme (aligned with Main Sequence, Lux, Blackbird)</li>
+                <li>Cormorant Garamond for headlines + Outfit for body</li>
+                <li>Blue accent color (#2d7fff)</li>
+                <li>3-column portfolio grid</li>
+              </ul>
+            </div>
+            <div className="design-card change">
+              <div className="design-label">Change</div>
+              <ul>
+                <li>Remove scan lines, floating orbs, and glitch effects (0/9 funds use heavy animation)</li>
+                <li>Increase whitespace between sections</li>
+                <li>Ensure clean mobile stacking (founder-investor first contact often happens on mobile)</li>
+                <li>Strip the background grid overlay and noise texture</li>
+              </ul>
             </div>
           </div>
-        );
-      })}
+        </section>
 
-      <h2 className="section-title" style={{ marginTop: 48 }}>Trust Signals</h2>
-      <p className="section-sub">Ranked by frequency across 9 fund homepages</p>
-      <table className="comp-table">
-        <thead>
-          <tr><th>Signal</th><th>Frequency</th><th>Bar</th></tr>
-        </thead>
-        <tbody>
-          {trustSignals.map((t) => {
-            const [n, d] = t.freq.split("/").map(Number);
-            const pct = (n / d) * 100;
-            return (
-              <tr key={t.signal}>
-                <td>{t.signal}</td>
-                <td style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600 }}>{t.freq}</td>
-                <td style={{ width: 200 }}>
-                  <div style={{ height: 8, background: "#1e293b", borderRadius: 4, overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${pct}%`, background: "#2d7fff", borderRadius: 4 }} />
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+        {/* ── PORTFOLIO REFERENCE ───────────────────────── */}
+        <section>
+          <h2 className="sh">Portfolio Reference</h2>
+          <p className="sp">All 16 companies with the one-line descriptors we recommend adding to the site.</p>
+          <div className="port-table">
+            <div className="port-header">
+              <span>Company</span><span>What they do</span><span>Category</span>
+            </div>
+            {[
+              { name: "Actuals", desc: "AI billing - converts contracts into code for automated invoicing", tag: "AI & Automation" },
+              { name: "Apollo", desc: "AI compliance for startups (SOC 2, ISO 27001, vuln scanning)", tag: "AI & Automation" },
+              { name: "Aquila", desc: "Wireless power delivery via high-intensity laser for drones", tag: "Space & Defense" },
+              { name: "Aussie Angels", desc: "Angel syndicate platform for co-investing in AU startups", tag: "Emerging" },
+              { name: "Chirp", desc: "AI sales platform unifying CRM, email, Slack, WhatsApp, LinkedIn", tag: "AI & Automation" },
+              { name: "Elita", desc: "Pet longevity - 100+ biomarkers + stem cell banking for dogs", tag: "Emerging" },
+              { name: "Fluency", desc: "OS-level agent mapping how work happens for AI automation", tag: "AI & Automation" },
+              { name: "Flux", desc: "Autonomous solar-electric agricultural robot for weed management", tag: "Robotics" },
+              { name: "HEO", desc: "Space domain awareness - high-res imagery of objects in orbit", tag: "Space & Defense" },
+              { name: "Keeyu", desc: "AI post-purchase ecommerce ops - proactive fulfillment fixes", tag: "AI & Automation" },
+              { name: "Kindling", desc: "AI tools + advertiser marketplace for mid-tier creators", tag: "Emerging" },
+              { name: "Magic Valley", desc: "Cultivated (cell-grown) meat as sustainable alternative", tag: "Robotics" },
+              { name: "Metahuman Labs", desc: "Pharmaceutical-grade creatine monohydrate supplements", tag: "Emerging" },
+              { name: "MP Space", desc: "Next-gen spacecraft power subsystems (battery + solar)", tag: "Space & Defense" },
+              { name: "Puralink", desc: "Autonomous pipe inspection robots for infrastructure", tag: "Robotics" },
+              { name: "Shopfront", desc: "Multi-channel listing for secondhand sellers + AI tools", tag: "AI & Automation" },
+            ].map(p => (
+              <div key={p.name} className="port-row">
+                <span className="port-name">{p.name}</span>
+                <span className="port-desc">{p.desc}</span>
+                <span className="port-tag">{p.tag}</span>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      <h2 className="section-title" style={{ marginTop: 48 }}>Key Vocabulary</h2>
-      <p className="section-sub">Words the best fund websites use vs. avoid</p>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 32 }}>
-        <div style={{ background: "#111827", border: "1px solid #1e293b", borderRadius: 10, padding: 24 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#4ade80", marginBottom: 12, fontFamily: "'JetBrains Mono', monospace" }}>USE</div>
-          <div style={{ fontSize: 14, color: "#b0bdd0", lineHeight: 2 }}>
-            "Back" (not "invest in")<br />
-            "Founders" (not "companies")<br />
-            "Build" / "building"<br />
-            "Future" / "tomorrow"<br />
-            "Conviction" / "belief"
-          </div>
-        </div>
-        <div style={{ background: "#111827", border: "1px solid #1e293b", borderRadius: 10, padding: 24 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#f87171", marginBottom: 12, fontFamily: "'JetBrains Mono', monospace" }}>AVOID</div>
-          <div style={{ fontSize: 14, color: "#b0bdd0", lineHeight: 2 }}>
-            "Synergy" / "ecosystem"<br />
-            "Alpha" / "value-add"<br />
-            Fund size in hero<br />
-            Exclamation marks<br />
-            Emojis
-          </div>
-        </div>
+        {/* ── FOOTER ────────────────────────────────────── */}
+        <footer className="foot">
+          <p>Prepared for Peter Davis, Davis Enterprises Holdings</p>
+          <p>
+            <a href="https://github.com/jgdeutsch/davis-enterprises-redesign" target="_blank" rel="noopener">
+              View source files on GitHub
+            </a>
+          </p>
+        </footer>
       </div>
     </>
   );
 }
 
-function PortfolioTab() {
-  return (
-    <>
-      <div className="stat-grid">
-        <div className="stat-card"><div className="stat-num">16</div><div className="stat-label">Portfolio Companies</div></div>
-        <div className="stat-card"><div className="stat-num">63%</div><div className="stat-label">AI-Native Software</div></div>
-        <div className="stat-card"><div className="stat-num">19%</div><div className="stat-label">Space & Defense</div></div>
-        <div className="stat-card"><div className="stat-num">25%</div><div className="stat-label">Robotics & Deep Tech</div></div>
-      </div>
+// ─── RECOMMENDATION DATA ──────────────────────────────────────────
 
-      <h2 className="section-title">All Portfolio Companies</h2>
-      <p className="section-sub">With one-line descriptors and category tags (as recommended in the brief)</p>
-      <div className="portfolio-grid">
-        {portfolio.map((p) => (
-          <a href={p.url} target="_blank" rel="noopener" key={p.name} style={{ textDecoration: "none", color: "inherit" }}>
-            <div className="portfolio-card">
-              <h3>{p.name}</h3>
-              <div className="sector">{p.sector}</div>
-              <div className="desc">{p.desc}</div>
-              <TagBadge tag={p.tag} />
-            </div>
-          </a>
-        ))}
-      </div>
+const recommendations = [
+  {
+    title: "Rewrite the hero as a belief statement",
+    effort: "low", effortLabel: "Quick win",
+    now: "The hero says \"Welcome\" followed by a generic paragraph. It doesn't differentiate Davis from any other angel investor.",
+    why: "9 out of 9 funds we analyzed lead with a single bold statement under 15 words. The hero answers one question: \"Who are you and what do you believe?\" - not \"Welcome to our website.\"",
+    evidence: "Main Sequence: \"We back deep tech founders.\" Lux: \"We turn sci-fi into sci-fact.\" Blackbird: \"Enter the world of Blackbird.\" Square Peg: \"We help founders from our corner of the world shape the future.\"",
+    target: `Pick one:
 
-      <h2 className="section-title" style={{ marginTop: 48 }}>Portfolio Themes</h2>
-      <p className="section-sub">The investment thesis the portfolio reveals</p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
-        {[
-          { title: "AI-Native Vertical Software", pct: "63%", companies: "Actuals, Apollo, Chirp, Fluency, Keeyu, Shopfront, Kindling, Elita", desc: "Each applies AI/automation to a specific, underserved operational pain point in a vertical.", color: "#2d7fff" },
-          { title: "Space & Defense", pct: "19%", companies: "Aquila, HEO, MP Space", desc: "Betting on Australia's growing sovereign space and defense capability.", color: "#c850ff" },
-          { title: "Robotics & Deep Tech", pct: "25%", companies: "Flux, Puralink, Aquila, MP Space", desc: "Companies building physical products with deep engineering, not just software.", color: "#00d4ff" },
-          { title: "Emerging & Platform", pct: "19%", companies: "Kindling, Elita, Metahuman Labs, Aussie Angels", desc: "Creator tools, pet health, consumer wellness, and ecosystem infrastructure.", color: "#ffb432" },
-        ].map((t) => (
-          <div key={t.title} style={{ background: "#111827", border: "1px solid #1e293b", borderRadius: 10, padding: 24 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <div style={{ fontSize: 16, fontWeight: 600 }}>{t.title}</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 700, color: t.color }}>{t.pct}</div>
-            </div>
-            <div style={{ fontSize: 13, color: "#7a8faa", marginBottom: 8 }}>{t.companies}</div>
-            <div style={{ fontSize: 13, color: "#b0bdd0", lineHeight: 1.5 }}>{t.desc}</div>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
+"We back bold Australian founders building what's next"
+"Private capital for Australia's most ambitious builders"
+"Conviction capital for founders pushing boundaries"
+
+Then add 1-2 sentences expanding on the thesis:
+"Davis Enterprises backs early-stage Australian companies across AI, space, robotics, and deep tech. We provide private capital, strategic support, and the financial expertise to help bold founders scale."`,
+  },
+  {
+    title: "Add one-line descriptors to every portfolio company",
+    effort: "low", effortLabel: "Quick win",
+    now: "The portfolio grid shows company names and logos. A founder scanning the grid has no idea what Actuals, Keeyu, or Fluency actually does.",
+    why: "Portfolio is the #1 trust signal (used by 9/9 funds). But it only works if founders can assess relevance. A space tech founder needs to instantly see that you've backed HEO, MP Space, and Aquila - and what they do. One line per company is all it takes.",
+    evidence: "See the Portfolio Reference section at the bottom of this brief for recommended one-liners for all 16 companies.",
+    target: `Under each company name, add:
+
+Flux
+"Autonomous solar-electric robots for precision agriculture"
+[ROBOTICS & DEEP TECH]
+
+Bonus: add a small category tag (AI / Space / Robotics / Emerging) to let founders filter mentally.`,
+  },
+  {
+    title: "Add a \"Pitch Us\" CTA to the navigation",
+    effort: "low", effortLabel: "Quick win",
+    now: "No clear call-to-action for founders. The only contact path is a \"Get in Touch\" button at the bottom that links to LinkedIn.",
+    why: "7/9 funds put a founder-facing CTA in the top navigation. It's the primary conversion path. Founders who land on the site need to see in the first second that there's a clear, low-friction way to reach out.",
+    evidence: "Main Sequence: \"Pitch\" in nav. Blackbird: \"Get Investment.\" AirTree: \"Get in touch.\" Square Peg: \"Get in Touch.\" Breakthrough Victoria: \"Submit your pitch.\"",
+    target: `[Logo] -- About / Portfolio / Thesis / Team / Journal -- [PITCH US]
+
+The button should be visually distinct (filled, accent color). It links to a simple email or contact form - not a 20-field application.`,
+  },
+  {
+    title: "Name the thesis pillars instead of \"sector agnostic\"",
+    effort: "med", effortLabel: "Medium effort",
+    now: "Investment criteria are shown as a generic icon list (Geography: Australian, Stage: Early-stage, Sector: Agnostic). This is buried in the About section and tells founders nothing about fit.",
+    why: "7/9 funds clearly articulate their thesis on the homepage. Founders self-select based on sector fit. A space tech founder seeing \"sector agnostic\" doesn't know if Davis understands their domain. But seeing \"Space & Defense\" with HEO, MP Space, and Aquila listed underneath creates instant relevance.",
+    evidence: "Main Sequence organizes around \"Six Challenges\" (space, decarbonisation, AI, food, healthcare, industry). Lux has named sector cards (space, biotech, microelectronics, energy). Both make the thesis concrete.",
+    target: `New section: "What We Back"
+
+Four cards:
+- AI & Automation (63% of portfolio)
+- Space & Defense (19%)
+- Robotics & Deep Tech (25%)
+- Emerging & Platform (19%)
+
+Each card: description + named portfolio companies as proof.
+
+Below the cards, a clean row:
+Stage: Pre-seed & Seed | Geography: Australia | Approach: Conviction-led`,
+  },
+  {
+    title: "Put Peter's bio on the homepage",
+    effort: "low", effortLabel: "Quick win",
+    now: "No team section on the homepage. Peter is referenced in testimonials and the footer links to peterdavisau.com, but founders have to leave the site to learn about him.",
+    why: "This is a personal fund. The investor IS the product. Founders choosing Davis are choosing to work with Peter - they need to see his face, read his background, and understand what he brings without clicking away. 6/9 funds show their team on the homepage.",
+    evidence: "Skip Capital (also a personal/family fund) makes the team the ENTIRE homepage. Their bios mix credentials with personality - jiu jitsu, flat whites, Seinfeld. It makes the team human.",
+    target: `Section: "Who We Are"
+
+Photo + Name + Title
+2-3 sentence bio mixing professional credentials with one personal detail.
+
+Example tone: "Peter has been investing in early-stage Australian companies for [X] years, with a background in [specific]. He backs founders who are building real things that solve real problems - and he's not afraid to bet on the unconventional."
+
+LinkedIn link + personal site link.`,
+  },
+  {
+    title: "Source 3 testimonials from portfolio founders",
+    effort: "med", effortLabel: "Medium effort",
+    now: "The site has testimonials from people who know Peter (Sean Grealy, others). They're good character references but speak about Peter as a person, not about the experience of being in the portfolio.",
+    why: "When a founder considering Davis reads another founder saying \"Peter connected us to our first defense customer\" or \"He helped us structure our Series A\" - that's what closes the deal. The question every founder has: \"What will this investor DO for me beyond the check?\"",
+    evidence: "AirTree uses 7 founder testimonials. Square Peg uses 10. Both focus on specific value: \"supported us through talent, press, and customer introductions\" (Canva co-founder on AirTree). \"Through the ups and the downs\" (multiple Square Peg founders).",
+    target: `Section: "From Our Founders"
+
+3 quotes from portfolio company founders (Flux, HEO, Chirp, Apollo, etc.)
+
+Each quote should reference specific help:
+- Speed of decision-making
+- Strategic introductions
+- Financial structuring expertise
+- Follow-on support
+
+Format: "[Quote]" - Name, Title, Company`,
+  },
+  {
+    title: "Add direct email alongside LinkedIn",
+    effort: "low", effortLabel: "Quick win",
+    now: "The only contact path is a \"Get in Touch\" button linking to the Davis Enterprises LinkedIn page. To message Peter, a founder must: click the button, log into LinkedIn, navigate to the page, find the message button, compose a message.",
+    why: "Every additional click between \"I want to reach out\" and \"message sent\" loses roughly 20% of potential contacts. LinkedIn-only adds 3+ friction clicks compared to a direct email link. Both Square Peg and AirTree offer direct contact alongside social links.",
+    target: `Bottom CTA section: "Let's Talk"
+
+"Building something bold? We'd love to hear about it."
+
+[Email Us: peter@davisenterprises.com.au]  [Connect on LinkedIn]
+
+Also add the email to the footer.`,
+  },
+  {
+    title: "Reduce visual effects and animation",
+    effort: "med", effortLabel: "Medium effort",
+    now: "The site has scan lines, floating orbs, glitch effects, a grid background overlay, and noise texture. Visually impressive, but heavy.",
+    why: "0/9 funds we analyzed use heavy animation. The best sites (Blackbird, Skip, Lux) use generous whitespace and clean transitions instead. Heavy effects slow page load, distract from content, and can feel gimmicky in a trust-driven context. Founders are scanning for relevance, not admiring particle effects.",
+    target: `Keep: dark background, serif/sans pairing, blue accent.
+Remove: scan lines, floating orbs, glitch effects, grid overlay, noise texture.
+Add: more whitespace between sections, clean fade-in transitions.`,
+  },
+  {
+    title: "Start a lightweight journal or blog",
+    effort: "high", effortLabel: "Longer-term",
+    now: "No content, blog, newsletter, or thought leadership on the site.",
+    why: "6/9 funds have thought leadership on their homepage. Content serves three purposes: (1) demonstrates domain expertise to founders, (2) builds SEO and discoverability, (3) gives founders something to share that builds reputation by proxy. Main Sequence publishes investment notes for every deal. Lux has an entire media platform.",
+    target: `Section: "Thinking" or "Journal"
+
+Start with 2-3 posts:
+- "Why We Invested in [Company X]" (investment thesis note)
+- "What I Look for in a Founder" (Peter's framework)
+- "The Australian Space Opportunity" (sector insight)
+
+Doesn't need a full blog platform. Linking to LinkedIn articles or a Substack works.`,
+  },
+  {
+    title: "Add newsletter signup",
+    effort: "low", effortLabel: "Quick win",
+    now: "No email capture anywhere on the site.",
+    why: "5/9 funds have newsletter signup on their homepage. It's a soft conversion for founders who aren't ready to pitch yet but want to stay on the radar. Over time, this builds a direct audience that doesn't depend on LinkedIn's algorithm.",
+    target: `Simple row at the bottom of the Journal section:
+
+"Stay in the loop" + email input + submit button
+
+Can be powered by Substack, Mailchimp, or even a simple form.`,
+  },
+];
+
+// ─── STYLES ───────────────────────────────────────────────────────
+
+const styles = `
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fafaf9; color: #1a1a1a; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+  /* Gate */
+  .gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #111; }
+  .gate form { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 48px; max-width: 380px; width: 100%; text-align: center; }
+  .gate h1 { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .gate p { color: #888; font-size: 14px; margin-bottom: 24px; }
+  .gate input { width: 100%; padding: 12px 16px; background: #111; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 15px; margin-bottom: 12px; outline: none; }
+  .gate input:focus { border-color: #555; }
+  .gate button { width: 100%; padding: 12px; background: #fff; color: #111; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .gate button:hover { background: #eee; }
+  .err { color: #e55; font-size: 13px; margin-bottom: 12px; }
+
+  /* Layout */
+  .wrap { max-width: 820px; margin: 0 auto; padding: 40px 24px 80px; }
+  section { margin-bottom: 64px; }
+
+  /* Cover */
+  .cover { text-align: center; padding: 80px 0 64px; border-bottom: 1px solid #e5e5e5; margin-bottom: 64px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; border: 1px solid #ddd; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; }
+  .cover h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .cover h2 { font-size: 18px; font-weight: 400; color: #666; margin-bottom: 24px; }
+  .covermeta { max-width: 540px; margin: 0 auto 16px; color: #555; font-size: 15px; line-height: 1.65; }
+  .coverdate { color: #999; font-size: 13px; }
+
+  /* Section headers */
+  .sh { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .sp { color: #555; font-size: 15px; margin-bottom: 28px; line-height: 1.65; }
+  .ssh { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #999; margin: 32px 0 16px; }
+
+  /* Executive Summary */
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  @media (max-width: 640px) { .summary-grid { grid-template-columns: 1fr; } }
+  .summary-card { border-radius: 10px; padding: 24px; }
+  .summary-card.good { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .summary-card.gap { background: #fef2f2; border: 1px solid #fecaca; }
+  .summary-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+  .summary-card.good .summary-label { color: #16a34a; }
+  .summary-card.gap .summary-label { color: #dc2626; }
+  .summary-card ul { list-style: none; padding: 0; }
+  .summary-card li { font-size: 14px; color: #333; padding: 4px 0; padding-left: 16px; position: relative; line-height: 1.55; }
+  .summary-card li::before { content: ''; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; border-radius: 50%; }
+  .summary-card.good li::before { background: #22c55e; }
+  .summary-card.gap li::before { background: #ef4444; }
+  .verdict { background: #f8f8f8; border: 1px solid #e5e5e5; border-radius: 10px; padding: 20px 24px; font-size: 14px; color: #444; line-height: 1.65; }
+  .verdict strong { color: #1a1a1a; }
+
+  /* Fund chips */
+  .fund-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+  .fund-chip { font-size: 12px; font-weight: 500; color: #555; background: #f0f0f0; padding: 5px 12px; border-radius: 20px; }
+
+  /* Pattern rows */
+  .pattern-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+  .pattern-row { display: flex; gap: 16px; align-items: flex-start; padding: 14px 18px; background: #fff; border: 1px solid #eee; border-radius: 8px; }
+  .pattern-count { font-size: 14px; font-weight: 700; color: #1a1a1a; min-width: 36px; font-variant-numeric: tabular-nums; }
+  .pattern-name { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .pattern-note { font-size: 13px; color: #888; margin-top: 2px; }
+
+  /* Insight box */
+  .insight-box { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid #1a1a1a; border-radius: 0 10px 10px 0; padding: 20px 24px; margin: 32px 0; font-size: 14px; color: #444; line-height: 1.65; }
+  .insight-box strong { color: #1a1a1a; }
+  .insight-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #1a1a1a; margin-bottom: 8px; }
+
+  /* Hero compare */
+  .hero-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+  @media (max-width: 640px) { .hero-compare { grid-template-columns: 1fr; } }
+  .hero-example { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 16px 20px; }
+  .hero-example.current { background: #fef2f2; border-color: #fecaca; }
+  .hero-fund { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #999; margin-bottom: 6px; }
+  .hero-example.current .hero-fund { color: #dc2626; }
+  .hero-quote { font-size: 16px; font-weight: 500; color: #1a1a1a; font-style: italic; }
+
+  /* Thesis grid */
+  .thesis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .thesis-grid { grid-template-columns: 1fr; } }
+  .thesis-card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 24px; }
+  .thesis-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .thesis-title { font-size: 16px; font-weight: 700; }
+  .thesis-pct { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .thesis-desc { font-size: 13px; color: #666; line-height: 1.55; margin-bottom: 12px; }
+  .thesis-companies { font-size: 12px; color: #999; font-weight: 500; }
+
+  /* Recommendations */
+  .rec { margin-bottom: 32px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
+  .rec-head { display: flex; align-items: center; gap: 14px; padding: 16px 24px; background: #fafafa; border-bottom: 1px solid #e5e5e5; }
+  .rec-num { font-size: 14px; font-weight: 800; color: #1a1a1a; min-width: 24px; }
+  .rec-title { font-size: 16px; font-weight: 700; flex: 1; }
+  .rec-effort { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .rec-effort.low { background: #dcfce7; color: #16a34a; }
+  .rec-effort.med { background: #fef9c3; color: #a16207; }
+  .rec-effort.high { background: #fee2e2; color: #dc2626; }
+  .rec-body { display: grid; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 640px) { .rec-body { grid-template-columns: 1fr; } }
+  .rec-col { padding: 24px; }
+  .rec-target { background: #f8fafc; border-left: 1px solid #e5e5e5; }
+  @media (max-width: 640px) { .rec-target { border-left: none; border-top: 1px solid #e5e5e5; } }
+  .rec-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #999; margin-bottom: 8px; }
+  .rec-text { font-size: 14px; color: #444; line-height: 1.65; }
+  .rec-mock { font-size: 13px; color: #1a1a1a; line-height: 1.7; white-space: pre-wrap; font-family: 'SF Mono', 'Fira Code', monospace; background: #f0f4f8; border-radius: 6px; padding: 16px; }
+
+  /* Flow */
+  .flow { border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
+  .flow-row { display: grid; grid-template-columns: 48px 140px 1fr; align-items: center; padding: 14px 20px; border-bottom: 1px solid #eee; }
+  .flow-row:last-child { border-bottom: none; }
+  .flow-num { font-size: 13px; font-weight: 700; color: #999; font-variant-numeric: tabular-nums; }
+  .flow-name { font-size: 14px; font-weight: 700; }
+  .flow-desc { font-size: 13px; color: #666; }
+
+  /* Design notes */
+  .design-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 640px) { .design-grid { grid-template-columns: 1fr; } }
+  .design-card { border-radius: 10px; padding: 24px; }
+  .design-card.keep { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .design-card.change { background: #fefce8; border: 1px solid #fde68a; }
+  .design-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+  .design-card.keep .design-label { color: #16a34a; }
+  .design-card.change .design-label { color: #a16207; }
+  .design-card ul { list-style: disc; padding-left: 18px; }
+  .design-card li { font-size: 13px; color: #444; padding: 3px 0; line-height: 1.55; }
+
+  /* Portfolio table */
+  .port-table { border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
+  .port-header { display: grid; grid-template-columns: 120px 1fr 140px; padding: 10px 20px; background: #fafafa; border-bottom: 1px solid #e5e5e5; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #999; }
+  .port-row { display: grid; grid-template-columns: 120px 1fr 140px; padding: 10px 20px; border-bottom: 1px solid #f0f0f0; align-items: center; }
+  .port-row:last-child { border-bottom: none; }
+  .port-name { font-size: 14px; font-weight: 600; }
+  .port-desc { font-size: 13px; color: #555; }
+  .port-tag { font-size: 11px; font-weight: 600; color: #888; }
+
+  /* Footer */
+  .foot { text-align: center; padding: 40px 0; border-top: 1px solid #e5e5e5; margin-top: 32px; }
+  .foot p { font-size: 13px; color: #999; margin-bottom: 8px; }
+  .foot a { color: #555; text-decoration: underline; }
+  .foot a:hover { color: #1a1a1a; }
+
+  @media (max-width: 640px) {
+    .cover h1 { font-size: 28px; }
+    .port-header, .port-row { grid-template-columns: 100px 1fr; }
+    .port-tag { display: none; }
+    .flow-row { grid-template-columns: 36px 1fr; }
+    .flow-desc { display: none; }
+  }
+`;
