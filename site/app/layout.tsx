@@ -10,11 +10,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body style={{ margin: 0, fontFamily: "'Inter', sans-serif", background: "#0a0f1a", color: "#e0e8f5" }}>
+      <body style={{ margin: 0 }}>
         {children}
       </body>
     </html>
