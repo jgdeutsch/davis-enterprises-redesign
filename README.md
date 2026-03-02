@@ -2,12 +2,13 @@
 
 A comprehensive analysis and redesign brief for [davisenterprises.com.au](https://davisenterprises.com.au/), informed by competitive research across 9 comparable early-stage and deep tech venture funds.
 
-## Live Brief
+## Live Sites
 
-**View the interactive brief:** [davis-brief.vercel.app](https://davis-brief.vercel.app)
-**Password:** `keira26`
-
+**Redesign Brief:** [davis-brief.vercel.app](https://davis-brief.vercel.app) (password: `keira26`)
 The brief includes side-by-side comparisons to best-in-class fund websites, clickable links to all 9 analyzed sites, and links to all 16 portfolio company websites.
+
+**Optimized Website Preview:** [davis-brief.vercel.app/preview](https://davis-brief.vercel.app/preview)
+A fully built implementation of all 10 recommendations using the Davis dark color scheme (#040810, #2d7fff, Cormorant Garamond + Outfit). Includes belief hero, filterable portfolio with descriptors, thesis pillars, founder testimonials, Peter's bio, journal section, newsletter signup, and Pitch Us CTA.
 
 ## What's In This Repo
 
@@ -43,8 +44,9 @@ Analysis of all 16 Davis Enterprises portfolio companies, organized by theme:
 - Consumer / Health / Lifestyle
 - Ecosystem plays
 
-### 4. `site/` - Interactive Brief
-The password-protected Next.js app deployed at [davis-brief.vercel.app](https://davis-brief.vercel.app). NYT-style editorial design with all analysis, comparisons, and recommendations in a single-scroll format.
+### 4. `site/` - Interactive Brief + Optimized Website
+- `site/app/page.tsx` - Password-protected Next.js brief at [davis-brief.vercel.app](https://davis-brief.vercel.app). NYT-style editorial design with all analysis, comparisons, and recommendations.
+- `site/app/preview/page.tsx` - **Optimized website** at [davis-brief.vercel.app/preview](https://davis-brief.vercel.app/preview). Full implementation of all 10 recommendations using the Davis dark theme.
 
 ## Top 10 Recommendations
 
@@ -84,4 +86,4 @@ npm run dev
 
 ---
 
-*Prepared February 2026*
+*Brief prepared February 2026. Optimized site built March 2026.*
